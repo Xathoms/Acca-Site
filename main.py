@@ -3,13 +3,12 @@ import uvicorn
 
 app = FastAPI()
 
+
 @app.get("/home")
 def write_home():
-    return {
-        "Name" : "Thomas",
-        "Age" : 24
-    }
-    
+    return {"Name": "Thomas", "Age": 24}
+
+
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",

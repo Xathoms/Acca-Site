@@ -3,7 +3,8 @@ requests
 rich
 sqlalchemy
 xlsxwriter
-flask_sqlalchemy
 mysqlclient
 fastapi
-"uvicorn[standard]"
+uvicorn
+pydantic
+jinja2

@@ -1,7 +1,21 @@
 from models import *
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
-engine = create_engine('mysql://{0}:{1}@{2}:{3}/{4}?charset=utf8mb4'.format('xathoms', 'Xath3488', '195.231.19.190', '3306','ACCA'),pool_pre_ping=True,pool_recycle=3600,echo_pool=True,pool_size=10, max_overflow=20)
+SQLALCHEMY_DATABASE_URL = (
+    "mysql://xathoms:Xath3488@195.231.19.190:3306/ACCA?charset=utf8mb4"
+)
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL,
+    pool_pre_ping=True,
+    pool_recycle=3600,
+    echo_pool=True,
+    pool_size=10,
+    max_overflow=20,
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
 
 session = Session(engine)
