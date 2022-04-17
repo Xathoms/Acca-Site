@@ -1,12 +1,34 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy.orm import Session
+import crud, schemas
+from DBConfig import SessionLocal
 import uvicorn
 
 app = FastAPI()
 
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+         
+@app.post("/users/", response_model=schemas.User)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    # db_user = crud.get_user_by_email(db, email=user.email)
+    # if db_user:
+    #     raise HTTPException(status_code=400, detail="Email already registered")
+    return crud.create_user(db=db, user=user)
 
-@app.get("/home")
-def write_home():
-    return {"Name": "Thomas", "Age": 24}
+@app.get("/users/{user_id}", response_model=schemas.User)
+def read_user(chat_id: int, db: Session = Depends(get_db)):
+    this_date = crud.get_this_date(db)
+    last_date = crud.get_last_date(db)
+    db_user = crud.get_user(db, chat_id=chat_id, this_date=this_date.Date, last_date=last_date.Date)
+    if db_user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db_user
 
 
 if __name__ == "__main__":
