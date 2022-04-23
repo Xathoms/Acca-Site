@@ -3,10 +3,10 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 import crud, schemas
-from DBConfig import SessionLocal
+from config import SessionLocal,settings
 import uvicorn
 
-app = FastAPI()
+app = FastAPI(title=settings.PROJECT_NAME,version=settings.PROJECT_VERSION)
 
 templates = Jinja2Templates(directory="templates")
 
@@ -18,9 +18,9 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/", response_model=schemas.User)
+@app.get("/", response_class=HTMLResponse)
 def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("home.html", {"request": request})
 
 @app.post("/users/", response_model=schemas.User)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
